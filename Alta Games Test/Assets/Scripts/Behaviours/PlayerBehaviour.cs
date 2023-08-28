@@ -20,32 +20,50 @@ public class PlayerBehaviour : MonoBehaviour
     private BulletBehaviour bulletBehaviour = null;
     private GameObject bullet = null;
     private bool isTouch = false;
-    
+    private bool isPlay = false;
     
     private void Awake()
     {
-        playerController = new PlayerController(StartScore);
+        Init();
     }
 
     private void OnEnable()
     {
         EventSystem.WinGameEvent += Win;
+        EventSystem.StartGameEvent += Play;
+        EventSystem.StartGameEvent += Init;
     }
 
     private void OnDisable()
     {
         EventSystem.WinGameEvent -= Win;
+        EventSystem.StartGameEvent -= Play;
+    }
+
+    private void Init()
+    {
+        playerController = new PlayerController(StartScore);
+    }
+
+    private void Play()
+    {
+        isPlay = true;
     }
 
     private void Update()
     {
-        if (playerController.PlayerScore < StartScore * 0.2)
+        if (playerController.PlayerScore < StartScore * 0.4)
         {
             EventSystem.InvokeLoseGame();
+            isPlay = false;
         }
 
+        if (Input.touchCount > 0 && !isPlay && playerController.PlayerScore == StartScore)
+        {
+            EventSystem.InvokeStartGame();
+        }
 
-        if (Input.touchCount > 0)
+        if (Input.touchCount > 0 && isPlay)
         {
             isTouch = true;
             if (bullet == null)
@@ -73,10 +91,13 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void Win()
     {
-        player.transform.DOJump(player.transform.position + new Vector3(0f, 0f, 50f), 2.5f, 5, 5, false);
+        isPlay = false;
         DOTween.Sequence()
             .AppendInterval(2)
             .Append(door.transform.DORotate(new Vector3(0,90,0),0.5f));
+        
+        
+        player.transform.DOJump(new Vector3(30.8f, 0f, 48f), 2f, 4, 5, false);
     }
 
     private void ChangeSize()

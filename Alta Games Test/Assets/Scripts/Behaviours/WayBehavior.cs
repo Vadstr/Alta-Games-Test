@@ -55,6 +55,8 @@ public class WayBehavior : MonoBehaviour
                 TreesOnWay.Remove(other.gameObject);
             }
         }
+
+        RegenerateListInvoke();
     }
 
     private void OnDisable()

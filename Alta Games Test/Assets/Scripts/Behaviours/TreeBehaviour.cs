@@ -44,4 +44,9 @@ public class TreeBehaviour : MonoBehaviour
         EventSystem.InvokeCheckTree();
         Destroy(this.gameObject);
     }
+
+    private void OnDestroy()
+    {
+        EventSystem.AnigilateEvent -= AnigilateEvent;
+    }
 }
