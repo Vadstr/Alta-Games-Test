@@ -12,7 +12,7 @@ public class TreeBehaviour : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        EventSystem.Anigilate += Anigilate;
+        EventSystem.AnigilateEvent += AnigilateEvent;
         if (other.tag == "StopTrigger")
         {
             other.gameObject.GetComponentInParent<BulletBehaviour>().StopMoove();
@@ -22,17 +22,17 @@ public class TreeBehaviour : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        EventSystem.Anigilate -= Anigilate;
+        EventSystem.AnigilateEvent -= AnigilateEvent;
     }
 
-    public void Anigilate()
+    public void AnigilateEvent()
     {
         StartCoroutine(AnigilateTree());
     }
 
     public IEnumerator AnigilateTree()
     {
-        EventSystem.Anigilate -= Anigilate;
+        EventSystem.AnigilateEvent -= AnigilateEvent;
         this.gameObject.GetComponent<Collider>().enabled = false;
         secondMaterial.color = Color.white;
         Mesh.materials[0] = secondMaterial;
@@ -41,7 +41,7 @@ public class TreeBehaviour : MonoBehaviour
             Mesh.materials[0].color = new Color(1, 1 - i/100f , 1 - i/100f);
             yield return new WaitForSeconds(0.007f);
         }
-        
+        EventSystem.InvokeCheckTree();
         Destroy(this.gameObject);
     }
 }
